@@ -9,7 +9,7 @@ Simple bash-native port scanner, because why not.
 ```bash
 $ echo scanme.nmap.org | ./portscan.sh 22,80,443
 ```
-- Scanning IPs
+- Scanning CIDR
 ```bash
-$ echo 192.168.{0..1}.{1..10} | tr ' ' '\n' | ./portscan.sh -d 0-3 22,443-445,80
+$ echo 192.168.0.0/24 | ./portscan.sh -d 0-3 22,443-445,80
 ```
