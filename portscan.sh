@@ -4,7 +4,7 @@ trap k SIGINT
 
 k() { echo -e "[\033[31mE\033[0m] Oh geez..."; exit 1; }
 d() { [[ $1 =~ ${pr} ]] && echo $((RANDOM%(${1#*-}-${1%-*}+1)+${1%-*})) || echo "$1"; }; export -f d 
-s(){ echo "${b[@]}" | sed 's/ /\n/g' | shuf | xargs -P"${t}" -I{} bash -c $'timeout 1 bash -c \'</dev/tcp/{}\' &>/dev/null && (echo \'{} open\' | sed \'s/\//:/\') || (echo \'{} closed\' | sed \'s/\//:/\'); sleep $(d $1)' _ "${d}" | tee -a "${e}"; };
+s(){ echo "${b[@]}" | sed 's/ /\n/g' | shuf | xargs -P"${t}" -I{} bash -c $'timeout 10 bash -c \'</dev/tcp/{}\' &>/dev/null && (echo \'{} open\' | sed \'s/\//:/\') || (echo \'{} closed\' | sed \'s/\//:/\'); sleep $(d $1)' _ "${d}" | tee -a "${e}"; };
 v(){ if [[ $1 =~ ${ir} ]]; then return 0; elif host -T "$1" "${r}" &>/dev/null; then return 0; else echo -e "[\033[31mE\033[0m] Failed to resolve $1"; return 1; fi; }
 l(){ for p in $(seq "$2" "$3"); do b+=("$1\/${p}"); done; }
 p(){ IFS=',' read -ra ps <<< "$1"; for h in $(printf "%s\n" "${ips[@]}"); do v "${h}" && for p in "${ps[@]}"; do if [[ ${p} =~ ${pr} ]]; then l "${h}" "${p%-*}" "${p##*-}"; else l "${h}" "${p}" "${p}"; fi; done; done; s; }
