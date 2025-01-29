@@ -4,15 +4,16 @@ trap k SIGINT
 
 k(){ echo -e "[\033[31mE\033[0m] Oh geez..."; exit 1; }
 d(){ [[ $1 =~ ${pr} ]] && echo $((RANDOM%(${1#*-}-${1%-*}+1)+${1%-*})) || echo "$1"; }; export -f d 
-s(){ echo "${b[@]}" | (sed 's/ /\n/g'||true) | (shuf||true) | (xargs -P"${t}" -I{} bash -c $'timeout $2 bash -c \'</dev/tcp/{}\' &>/dev/null && (echo \'{} open\' | sed \'s/\//:/\') || (echo \'{} closed\' | sed \'s/\//:/\'); sleep $(d $1)' _ "${d}" "${w}"||true) | tee -a "${e}"; }
+o(){ if $o; then [[ $1 == *"open" ]] && (echo "$1" | tee -a "${e}"); else (echo "$1" | tee -a "${e}"); fi; }
+s(){ echo "${b[@]}" | (sed 's/ /\n/g'||true) | (shuf||true) | (xargs -P"${t}" -I{} bash -c $'timeout $2 bash -c \'</dev/tcp/{}\' &>/dev/null && (echo \'{} open\' | sed \'s/\//:/\') || (echo \'{} closed\' | sed \'s/\//:/\'); sleep $(d $1)' _ "${d}" "${w}"||true) | while read -r l; do o "${l}"; done; }
 v(){ if [[ $1 =~ ${ir} ]]; then return 0; elif host -T "$1" "${r}" &>/dev/null; then return 0; else echo -e "[\033[31mE\033[0m] Failed to resolve $1"; return 1; fi; }
 l(){ for p in $(seq "$2" "$3"); do b+=("$1\/${p}"); done; }
 p(){ IFS=',' read -ra ps <<< "$1"; for h in $(printf "%s\n" "${ips[@]}"); do v "${h}" && for p in "${ps[@]}"; do if [[ ${p} =~ ${pr} ]]; then l "${h}" "${p%-*}" "${p##*-}"; else l "${h}" "${p}" "${p}"; fi; done; done; s; }
 c(){ IFS=/ read -r i m<<<"$1";IFS=. read -r a b c d<<<"${i}";i=$((a*256**3+b*256**2+c*256+d));s=$((32-m));n=$((2**s));b=$((i&~(n-1)));e=$((b+n-1));for((j=b+1;j<=e-1;j++)); do echo "$((j>>24&255)).$((j>>16&255)).$((j>>8&255)).$((j&255))"; done; }
-u(){ echo -e "~ Bash Port Scanner\nUsage: $0 [-d delay] [-r resolver] [-t threads] [-w <timeout>] <ports>\nExample: echo scanme.nmap.org | $0 -d 5-10 20-25,80,443,8000-8008,445" && exit 1; }
-while getopts "d:t:r:w:h" opt; do case ${opt} in d) d=${OPTARG} ;; r) r=${OPTARG} ;; t) t=${OPTARG} ;; w) w=${OPTARG} ;; h) u ;; *) u;; esac; done; shift $((OPTIND -1))
+u(){ echo -e "~ Bash Port Scanner\nUsage: $0 [-d delay] [-r resolver] [-t threads] [-w <timeout>] [-o open] <ports>\nExample: echo scanme.nmap.org | $0 -d 5-10 20-25,80,443,8000-8008,445" && exit 1; }
+while getopts "d:t:r:w:ho" opt; do case ${opt} in d) d=${OPTARG} ;; r) r=${OPTARG} ;; t) t=${OPTARG} ;; w) w=${OPTARG} ;; o) o=true;; h) u ;; *) u;; esac; done; shift $((OPTIND -1))
 
-: "${d:=1}" "${t:=1}" "${w:=1}"
+: "${d:=1}" "${t:=1}" "${w:=1}" "${o:=false}"
 b=(); a=$1; e="${PWD}/$(date "+%d%m%Y_%H%M%S")_portscan_results.txt"
 ips=$(timeout 1 cat -)
 nr='^[0-9]{1,}$'
