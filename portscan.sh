@@ -26,5 +26,5 @@ dp='7-9,13,21-26,37,53,79,80,81,88,100,106,110-113,119,135,139,143,144,179,199,3
 [[ -z ${ips} ]] && echo -e "\n[\033[34mI\033[0m] Input AWOL!" && exit 1 
 [[ -z ${r} ]] && echo -e "[\033[1;33mW\033[0m] No DNS specified. System DNS will be used!"
 [[ ${ips} =~ ${cr} ]] && echo -e "[\033[34mI\033[0m] Expanding CIDR..." && ips=$(c "${ips}")
-[[ -z ${a} ]] && echo -e "[\033[34mI\033[0m] Scanning commom ports..." && a="${dp}"; if [[ ${a} =~ ${ar} ]];then p "${a}"; else u; fi
-if [[ -s ${e} ]]; then sort -V "${e}" -o "${e}" && echo -e "\n[\033[34mI\033[0m] Results stored in ${e}"; else rm -f "${e}" &>/dev/null; fi
+echo -ne "[\033[34mI\033[0m] Scan started"; [[ -z ${a} ]] && echo ". Scanning commom ports..." && a="${dp}"; if [[ ${a} =~ ${ar} ]];then echo && p "${a}"; else u; fi
+echo -ne "\n[\033[34mI\033[0m] Scan finished"; if [[ -s ${e} ]]; then sort -V "${e}" -o "${e}" && echo -e ". Results stored in ${e}"; else rm -f "${e}" &>/dev/null && [[ $o ]] && echo ". No open ports"; fi;
