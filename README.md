@@ -3,7 +3,7 @@ Simple bash-native port scanner, because why not.
 ## Usage
 > delay can be a range (i.e. 5-10)
 
-`portscan.sh [-d <delay>] [-r <resolver>] [-t <threads>] [-w <timeout>] [-o show_open] [-f <output_file>] <ports>
+`portscan.sh [-d <delay>] [-r <resolver>] [-t <threads>] [-w <timeout>] [-o show_open] [-f <output_file>] <ports>`
 ## Examples
 - Scanning common ports of single IP 
 ```bash
